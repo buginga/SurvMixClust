@@ -28,8 +28,6 @@ conda create -n env_for_SurvMixClust python=3.7
 ```sh
 pip install -r requirements.txt
 ```
-pip install -r requirements.txt
-```
 
 ## Data
 We consider the following datasets:
