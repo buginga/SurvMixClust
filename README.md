@@ -20,8 +20,13 @@ SurvMix Clust is a finite mixture of nonparametric distributions, using the feat
 The code is implemented with the following dependencies:
 - The R package [survPresmooth](https://cran.r-project.org/web/packages/survPresmooth/index.html) needs to installed. Then, rpy2 package is used to communicate with this package from inside python.
 
-- still to be done, requirements.txt doesn't have the required packages. And needs to be tested if a pip install -r requirements.txt will going to work.  
-
+- Create a conda environment with python=3.7.
+```sh
+conda create -n env_for_SurvMixClust python=3.7
+```
+- Then, install the requirements with pip.
+```sh
+pip install -r requirements.txt
 ```
 pip install -r requirements.txt
 ```
@@ -31,9 +36,9 @@ We consider the following datasets:
 
 - [SUPPORT](http://biostat.mc.vanderbilt.edu/wiki/Main/DataSets)
 - [Flchain](https://vincentarelbundock.github.io/Rdatasets/doc/survival/flchain.html)
-- METABRIC
-- GBSG
-- WHAS500
+- [METABRIC](https://pubmed.ncbi.nlm.nih.gov/22522925/)
+- [GBSG](https://pubmed.ncbi.nlm.nih.gov/10676647/)
+- [WHAS500](https://www.wiley.com/en-us/Applied+Survival+Analysis%3A+Regression+Modeling+of+Time+to+Event+Data%2C+2nd+Edition-p-9780471754992)
 
 ## Model Training
 
