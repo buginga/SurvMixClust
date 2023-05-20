@@ -3,17 +3,20 @@
 This repository contains the code for the model present in the paper X. It structures its use using the functions fit, predict and training similar to scikit-learn API.
 
 ```latex
-
+<to do: reference for article>
 ```
  
 ## Model
 
 SurvMix Clust is a finite mixture of nonparametric distributions, using the features to model the mixture proportions with a multinomial logistic regression. In other words, it's a mixture of experts with a gating network for the right-censored time-to-event clusterization problem. It's trained via maximum likelihood with a variety of the Expectation-Maximization (EM) algorithm. Experimental evidence presented shows that our proposal generates competitive predictive performance, sharply different and informative clusters, and interpretable results.
 
-![Model](figures/bayesian_net.png)
+![Gif](figures/METABRIC_run_4_clusters.gif)
 
+<!-- <img src="figures/bayesian_net.png"  width="30%" height="30%"> -->
 
 ![Risk](figures/figure_comparing_clusterizations.png)
+
+
 
 
 ## Prerequisites
