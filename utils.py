@@ -113,6 +113,10 @@ def select_bandwidth(X, frac=1.):
         A list with the bandwidth given by the survPresmooth package for X.
     """
     
+    if len(X) > 5000:
+        print(f"\n{4*'#'} Dataset is unecessarily big for bandwidth calculation, subsampling with replacement to 1000. {4*'#'}")
+        X = X.sample(n=1000, replace=False).copy()
+    
     import rpy2.robjects.packages as rpackages
     import rpy2.robjects as robjects
     survPresmooth = rpackages.importr('survPresmooth')
@@ -135,13 +139,13 @@ def select_bandwidth(X, frac=1.):
         # Only meaningful for density and hazard function estimation. Internally computed when NULL, the default
         r_ps = r_presmooth(t, delta, estimand = 'f', bw_selec = 'plug-in', x_est = x_est)
 
-        print(f"{4*'#'} success {4*'#'}")
+        print(f"{4*'#'} success {4*'#'}\n")
 
         return list(r_ps.rx2['bandwidth'])
 
     except Exception as error:
 
-        print(f"{4*'#'} exception of type {type(error).__name__} ocurred with 100% of data {4*'#'}")
+        print(f"{4*'#'} exception of type {type(error).__name__} ocurred with 100% of data {4*'#'}\n")
         
         max_number_tries = 50
          
@@ -149,7 +153,7 @@ def select_bandwidth(X, frac=1.):
 
             try:
 
-                print(f"\n{4*'#'} plug-in estimate with sub-sampled {int(frac*100)}% of data (n_tries: {n_tries+1}) {4*'#'}")
+                print(f"{4*'#'} plug-in estimate with sub-sampled {int(frac*100)}% of data (n_tries: {n_tries+1}) {4*'#'}")
 
                 if frac == 1.:
                     print(f"{4*'#'} sampling 100% with replacement (n_tries: {n_tries+1}) {4*'#'}")
@@ -167,13 +171,13 @@ def select_bandwidth(X, frac=1.):
                 # Only meaningful for density and hazard function estimation. Internally computed when NULL, the default
                 r_ps = r_presmooth(t, delta, estimand = 'f', bw_selec = 'plug-in', x_est = x_est)
 
-                print(f"{4*'#'} success for {list(r_ps.rx2['bandwidth'])} {4*'#'}")
+                print(f"{4*'#'} success for {list(r_ps.rx2['bandwidth'])} {4*'#'}\n")
 
                 return list(r_ps.rx2['bandwidth'])
 
             except Exception as sub_error:
 
-                print(f"{4*'#'} exception of type {type(sub_error).__name__} ocurred {4*'#'}")
+                print(f"{4*'#'} exception of type {type(sub_error).__name__} ocurred {4*'#'}\n")
                 n_tries += 1
                 
 def cindex_km_from_model(X_target, Xd_target, logit, kmfs, global_fixed_bw):

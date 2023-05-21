@@ -154,14 +154,21 @@ class SurvMixClust(BaseEstimator):
         # Return the model
         return self
 
-    def predict_surv_df(self, X):
+    def predict_surv_df(self, X, n_cluster=None, n_fit=None):
         """It utilizes the best performing model obtained in model.fit to predict the survival function for each sample in X.
+        You can choose a specific model from the list of models generated in model.fit by specifying n_cluster and n_fit.
 
         Parameters
         ----------
         X : np.array or pd.DataFrame
             Array of shape (n_samples, n_features) containing the samples to generate the survival functions.
             The model works best with already normalized data.
+        n_cluster : int, optional
+            The cluster number of the specific result to be used, by default None.
+            If None, It defaults to using the clusterization of the best performing model obtained in model.fit.
+        n_fit : int, optional
+            The n_fit of the specific result to be used, by default None.
+            If None, It defaults to using the clusterization of the best performing model obtained in model.fit.
 
         Returns
         -------
@@ -177,20 +184,34 @@ class SurvMixClust(BaseEstimator):
         X = check_array(X).astype('float32')
 
         Xd_target = pd.DataFrame(data=X)
-
-        surv_df = surv_df_from_model(
+    
+        if (n_cluster is None) and (n_fit is None):
+            surv_df = surv_df_from_model(
             Xd_target.copy(), self.logit, self.kmfs)
+            
+            return surv_df
+        
+        else:
+            surv_df = surv_df_from_model(
+            Xd_target.copy(), self.info_list_K[n_cluster][n_fit]['logit'], self.info_list_K[n_cluster][n_fit]['kmfs'])
 
-        return surv_df
+            return surv_df
 
-    def predict(self, X):
+    def predict(self, X, n_cluster=None, n_fit=None):
         """Predicts the clusterized labels for each sample in X using the model fitted in model.fit.
+        You can choose a specific model from the list of models generated in model.fit by specifying n_cluster and n_fit.
 
         Parameters
         ----------
         X : np.array or pd.DataFrame
             Array of shape (n_samples, n_features) containing the samples.
             The model works best with already normalized data.
+        n_cluster : int, optional
+            The cluster number of the specific result to be used, by default None.
+            If None, It defaults to using the clusterization of the best performing model obtained in model.fit.
+        n_fit : int, optional
+            The n_fit of the specific result to be used, by default None.
+            If None, It defaults to using the clusterization of the best performing model obtained in model.fit.
 
         Returns
         -------
@@ -206,10 +227,17 @@ class SurvMixClust(BaseEstimator):
 
         Xd_target = pd.DataFrame(data=X)
 
-        labels = labels_from_model(
+        if (n_cluster is None) and (n_fit is None):
+            labels = labels_from_model(
             Xd_target.copy(), self.logit)
+            
+            return labels
+        
+        else:
+            labels = labels_from_model(
+            Xd_target.copy(), self.info_list_K[n_cluster][n_fit]['logit'])
 
-        return labels
+            return labels
 
     def training_set_labels(self):
         """Returns the clusterized labels for each sample in the training set for the best performing model obtained in model.fit.
@@ -227,9 +255,10 @@ class SurvMixClust(BaseEstimator):
         
         return self.info['new_labels']
     
-    def score(self, X, y, metric='cindex'):
+    def score(self, X, y, metric='cindex', n_cluster=None, n_fit=None):
         """Calculates the score of the model using the X and y provided.
-        It accepts c-index and integrated brier score as metrics.
+        It accepts c-index and integrated brier score as metrics. 
+        You can choose a specific model from the list of models generated in model.fit by specifying n_cluster and n_fit.
 
         Parameters
         ----------
@@ -244,6 +273,12 @@ class SurvMixClust(BaseEstimator):
                     y = [(bool(x), y) for x,y in zip(E,T)]
                     y = np.array(y ,  dtype=[('event', '?'), ('time', '<f8')])
                     return y
+        n_cluster : int, optional
+            The cluster number of the specific result to be used, by default None.
+            If None, It defaults to using the clusterization of the best performing model obtained in model.fit.
+        n_fit : int, optional
+            The n_fit of the specific result to be used, by default None.
+            If None, It defaults to using the clusterization of the best performing model obtained in model.fit.
         metric : str, optional
             If cindex, calculate the c-index score from survival analysis, by default 'cindex'.
             If ibs, calculate the integrated brier score from survival analysis.
@@ -256,9 +291,15 @@ class SurvMixClust(BaseEstimator):
 
         assert (metric in ['cindex', 'c-index',
                 'integrated brier score', 'ibs'])
+        
 
-        surv_df = self.predict_surv_df(X)
-
+        if (n_cluster is None) and (n_fit is None):
+            surv_df = self.predict_surv_df(X)
+            
+        else:
+            surv_df = self.predict_surv_df(X, n_cluster=n_cluster, n_fit=n_fit)
+        
+        
         from pycox.evaluation import EvalSurv
         durations_test, events_test = \
             (y['time']).astype('float32'), (y['event']).astype('float32')
