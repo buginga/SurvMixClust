@@ -21,7 +21,7 @@ SurvMix Clust is a finite mixture of nonparametric distributions, using the feat
 
 ## Prerequisites
 The code is implemented with the following dependencies:
-- The R package [survPresmooth](https://cran.r-project.org/web/packages/survPresmooth/index.html) needs to installed. Then, rpy2 package is used to communicate with this package from inside python.
+- The R package [survPresmooth](https://cran.r-project.org/web/packages/survPresmooth/index.html) (version 1.1.11) needs to installed. Then, rpy2 package is used to communicate with this package from inside python.
 
 - Create a conda environment with python=3.7.
 ```sh
